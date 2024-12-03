@@ -129,7 +129,7 @@ L.CanvasLayer = (L.Layer ? L.Layer : L.Class).extend({
     var pos = offset || new L.Point(0, 0);
     el.style[L.DomUtil.TRANSFORM] = (L.Browser.ie3d ? "translate(" + pos.x + "px," + pos.y + "px)" : "translate3d(" + pos.x + "px," + pos.y + "px,0)") + (scale ? " scale(" + scale + ")" : "");
   },
-  //------------------------------------------------------------------------------
+  // ------------------------------------------------------------------------------
   _animateZoom: function _animateZoom(e) {
     var scale = this._map.getZoomScale(e.zoom); // -- different calc of offset in leaflet 1.0.0 and 0.0.7 thanks for 1.0.0-rc2 calc @jduggan1
 
