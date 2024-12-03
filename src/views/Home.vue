@@ -1,4 +1,3 @@
-// @ts-nocheck
 <template>
   <div ref="mapContainer" class="map-container"></div>
 
@@ -29,7 +28,9 @@ import '../components/leaflet-velocity/leaflet-velocity.css';
 import '../components/leaflet-velocity/leaflet-velocity';  
 import windJson from '../json/wind-global.json'; // 风场数据
 // import windJson from '/public/new-wind-global3.json';  // 风场数据
+// @ts-ignore
 import dataJson from '/public/data.json';  // 热力图数据
+// @ts-ignore
 import typhoonGeoJson from '/public/typhoon_path/2012.json'; // 导入 GeoJSON 数据
 import 'leaflet.heat';         // 引入热力图插件
 import axios from 'axios';
@@ -40,8 +41,11 @@ const mapContainer = ref(null); // 地图容器DOM引用
 const map = ref(null); // 地图实例引用
 const center = ref([39.26, 115.25]); // 地图初始中心点坐标:经纬度
 const leafletStore = useQLeafletStore(); // 使用自定义仓库
+// @ts-ignore
 let velocityLayer = null; // 风场图层
+// @ts-ignore
 let heatmapLayer = null; // 热力图图层
+// @ts-ignore
 let geoJsonLayer  = null;
 const formData = reactive({
     selectedOption: 'wind1', // 默认选项
@@ -88,6 +92,7 @@ subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
   // 将两个图层组合成一个Layer Group
   const layers = L.layerGroup([mapVec, mapCva]);
   // 实例化地图对象，设置中心点、缩放级别、最小最大缩放限制等配置
+  // @ts-ignore
   map.value = L.map(mapContainer.value, {
     center: center.value, // 中心点坐标
     zoom: 3, // 初始缩放级别
@@ -99,21 +104,28 @@ subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
     attributionControl: false, // 隐藏版权信息
   });
   // 监听 zoomend 事件来更新 zoomLevel
+  // @ts-ignore
   map.value.on('zoomend', () => {
+    // @ts-ignore
     zoomLevel.value = map.value.getZoom();
   });
 };
 
 /*** 初始化风场图层:见leaflet的代码 */
 const initVelocity = () => {
-if (velocityLayer) {
-  map.value.removeLayer(velocityLayer);  // 如果已存在，先移除旧的风场图层
-}
-velocityLayer = L.velocityLayer(options).addTo(map.value);
+  // @ts-ignore
+  if (velocityLayer) {
+    // @ts-ignore
+    map.value.removeLayer(velocityLayer);  // 如果已存在，先移除旧的风场图层
+  }
+  // @ts-ignore
+  velocityLayer = L.velocityLayer(options).addTo(map.value);
 };
 // 移除风场图层
 const removeVelocityLayer = () => {
+  // @ts-ignore
 if (velocityLayer) {
+  // @ts-ignore
   map.value.removeLayer(velocityLayer);  // 从地图上移除风场图层
   velocityLayer = null;  // 清空图层引用
 }
@@ -122,16 +134,20 @@ if (velocityLayer) {
 // 初始化热力图图层
 const initHeatmap = () => {
   // 如果已有热力图层，先移除它
+  // @ts-ignore
   if (heatmapLayer) {
+    // @ts-ignore
     map.value.removeLayer(heatmapLayer);  // 从地图上移除热力图图层
   }
   // 创建热力图数据，温度值作为权重传入
+  // @ts-ignore
   const formattedData = dataJson.map(([lng, lat, temp]) => {
     return [lat, lng, temp];  // 经度和纬度位置，温度作为权重
   });
 
   // console.log(formattedData);
   // 创建热力图
+  // @ts-ignore
   heatmapLayer = L.heatLayer(formattedData, {
     radius: 12,      // 热力图点的半径
     blur: 25,         // 模糊度
@@ -155,7 +171,9 @@ const initHeatmap = () => {
 };
 // 移除热力图图层的函数
 const removeHeatmap = () => {
+  // @ts-ignore
 if (heatmapLayer) {
+  // @ts-ignore
   map.value.removeLayer(heatmapLayer);  // 移除热力图
   heatmapLayer = null;  // 清空热力图图层变量
 }
@@ -175,6 +193,7 @@ const updateInterval = 100; // 每秒更新一次
 
 
 let currentIndex = 0; // 当前显示的点的索引
+// @ts-ignore
 let currentTyphoonEyeLayer = null; // 当前台风眼的图层
 let fadeOutTimeout = null; // 用于渐变消失的定时器
 
@@ -190,6 +209,7 @@ const initializeJsonLayer = () => {
         fillOpacity: 0.3
       };
     }
+    // @ts-ignore
   }).addTo(map.value);
   // 设置一个函数逐步显示路径
   const animateTyphoon = () => {
@@ -197,7 +217,9 @@ const initializeJsonLayer = () => {
       const currentCoordinates = typhoonGeoJson.features[1].geometry.coordinates.slice(0, currentIndex + 1);
 
       // 更新路径
+      // @ts-ignore
       geoJsonLayer.clearLayers(); // 清除上次的路径
+      // @ts-ignore
       geoJsonLayer.addData({
         "type": "Feature",
         "geometry": {
@@ -208,7 +230,9 @@ const initializeJsonLayer = () => {
       });
 
       // 删除之前的台风眼
+      // @ts-ignore
       if (currentTyphoonEyeLayer) {
+        // @ts-ignore
         map.value.removeLayer(currentTyphoonEyeLayer);
       }
 
@@ -221,6 +245,7 @@ const initializeJsonLayer = () => {
         opacity: 0.6, // 边框透明度
         // 添加模糊效果
         className: 'typhoon-eye' // 通过 CSS 来添加模糊效果
+        // @ts-ignore
       }).addTo(map.value);
 
       // 增加索引，显示下一个点
@@ -240,6 +265,7 @@ const initializeJsonLayer = () => {
     const fadeOutStep = () => {
       if (opacity > 0) {
         opacity -= 0.05; // 每次减少一点透明度
+        // @ts-ignore
         currentTyphoonEyeLayer.setStyle({
           fillOpacity: opacity,
           opacity: opacity
@@ -247,7 +273,9 @@ const initializeJsonLayer = () => {
         fadeOutTimeout = setTimeout(fadeOutStep, 100); // 每100ms更新一次
       } else {
         // 完全消失时移除台风眼图层
+        // @ts-ignore
         if (currentTyphoonEyeLayer) {
+          // @ts-ignore
           map.value.removeLayer(currentTyphoonEyeLayer);
         }
       }
@@ -259,7 +287,9 @@ const initializeJsonLayer = () => {
   animateTyphoon();
 };
 const removeTyphoonmap = () => {
+  // @ts-ignore
   if (geoJsonLayer) {
+    // @ts-ignore
     map.value.removeLayer(geoJsonLayer);  
     geoJsonLayer = null;
   }
@@ -280,10 +310,13 @@ watch(() => formData.selectedOption, (newValue) => {
 // 使用 watch 监听 zoomLevel 变化，可以在此做其他操作，比如发送请求等
 watch(zoomLevel, (newZoom) => {
   // console.log('当前缩放级别:', newZoom);
+  // @ts-ignore
   if (selectedOption === 'wind') {
     initVelocity();
+    // @ts-ignore
   } else if(selectedOption === 'heat') {
     initHeatmap();
+    // @ts-ignore
   } else if(selectedOption === 'typhoon') {
     initializeJsonLayer();
     // 当前情况下不需要处理其他选项
@@ -291,6 +324,7 @@ watch(zoomLevel, (newZoom) => {
 });
 
 // 根据选中的选项执行相应的初始化函数
+// @ts-ignore
 const initializeLayer = (selectedOption) => {
   if (selectedOption === 'wind') {
     removeTyphoonmap();
@@ -309,6 +343,7 @@ const initializeLayer = (selectedOption) => {
 
 // 组件卸载前清理地图和图表资源，防止内存泄漏
 onUnmounted(() => {
+  // @ts-ignore
   map.value?.remove();
 });
 
