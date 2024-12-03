@@ -26,8 +26,8 @@ import { useQLeafletStore } from '../util/leafeltStore'; // 引入自定义仓�
 import { TianDiTu } from '../util/tiandituConstants'; // 引入天地图常量
 import '../components/leaflet-velocity/leaflet-velocity.css';
 import '../components/leaflet-velocity/leaflet-velocity';  
-// import windJson from '../json/wind-global.json'; // 风场数据
-import windJson from '/public/new-wind-global3.json';  // 风场数据
+import windJson from '../json/wind-global.json'; // 风场数据
+// import windJson from '/public/new-wind-global3.json';  // 风场数据
 import dataJson from '/public/data.json';  // 热力图数据
 import typhoonGeoJson from '/public/typhoon_path/2012.json'; // 导入 GeoJSON 数据
 import 'leaflet.heat';         // 引入热力图插件
